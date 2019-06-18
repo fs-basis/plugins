@@ -1,6 +1,7 @@
 config.*
 Makefile
 # automake stuff
+*.in
 COPYING
 INSTALL
 compile
