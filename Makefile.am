@@ -1,4 +1,4 @@
 AUTOMAKE_OPTIONS = gnu
 
 SUBDIRS = \
-	include input getrc
+	include input getrc stb-startup

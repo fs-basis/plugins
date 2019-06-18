@@ -243,7 +243,7 @@ if colorkey then
 			text = locale[lang].start_partition,
 			timeout = 0,
 			buttons={ "yes", "no" },
-			default = "no"
+			--default = "no"
 		}
 	end
 end
@@ -269,7 +269,7 @@ if res == "yes" then
 		text = locale[lang].reboot_partition,
 		timeout = 0,
 		buttons={ "yes", "no" },
-		default = "no"
+		--default = "no"
 	}
 	if res == "yes" then
 		reboot()
