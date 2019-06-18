@@ -1,4 +1,9 @@
 AUTOMAKE_OPTIONS = gnu
 
 SUBDIRS = \
-	include input getrc stb-startup
+	include input getrc
+
+if BOXTYPE_ARMBOX
+SUBDIRS += \
+	stb-startup
+endif
