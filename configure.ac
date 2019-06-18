@@ -29,4 +29,5 @@ include/Makefile
 input/Makefile
 getrc/Makefile
 stb-startup/Makefile
+stb-backup/Makefile
 ])
