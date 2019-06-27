@@ -7,6 +7,6 @@ SUBDIRS = \
 
 if BOXTYPE_ARMBOX
 SUBDIRS += \
-	stb-startup-ddt \
+	stb-startup-tux \
 	stb-backup
 endif

@@ -29,5 +29,6 @@ include/Makefile
 input/Makefile
 getrc/Makefile
 stb-startup-ddt/Makefile
+stb-startup-tux/Makefile
 stb-backup/Makefile
 ])
