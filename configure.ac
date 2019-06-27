@@ -28,6 +28,6 @@ Makefile
 include/Makefile
 input/Makefile
 getrc/Makefile
-stb-startup-tux/Makefile
+stb-startup/Makefile
 stb-backup/Makefile
 ])
