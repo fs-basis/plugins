@@ -12,7 +12,8 @@ SUBDIRS += \
 else
 SUBDIRS += \
 	stb-startup \
-	stb-backup
+	stb-backup \
+	stb-switch-rc
 endif
 endif
 
