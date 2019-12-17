@@ -1,9 +1,18 @@
 #!/bin/sh
-###############################################
-### Switch RC Code by BPanther, 15-Dec-2019 ###
-###############################################
+##################################
+### Switch RC Code by BPanther ###
+### Version 2.00,  15-Dec-2019 ###
+##################################
 
-BOXMODEL=`cat /proc/stb/info/model`
+[ -e /proc/stb/info/model ] && BOXMODEL=`cat /proc/stb/info/model` || exit
+[ -e /proc/stb/info/vumodel ] && VUMODEL=`cat /proc/stb/info/vumodel`
+if [ "$BOXMODEL" == "dm8000" ]; then
+	case $VUMODEL in
+		duo4k|solo4k|ultimo4k|uno4k|uno4kse|zero4k)
+			BOXMODEL=vuplus;;
+	esac
+fi
+
 case $BOXMODEL in
 	hd51)
 		DEFAULT_RC=8;;
@@ -11,8 +20,10 @@ case $BOXMODEL in
 		DEFAULT_RC=9;;
 	bre2ze4k)
 		DEFAULT_RC=10;;
+	vuplus)
+		DEFAULT_RC=2;;
 	*)
-		DEFAULT_RC=8;;
+		echo "FEHLER: Falsches Boxmodell!" && exit;;
 esac
 
 setrccode () {
@@ -41,20 +52,43 @@ setrccode () {
 	esac
 }
 
+setrccode_vu () {
+	case $1 in
+		1) echo 1 > /proc/stb/fp/remote_code
+		   echo 1 > /var/etc/rccode;;
+		2) echo 2 > /proc/stb/fp/remote_code
+		   echo 2 > /var/etc/rccode;;
+		3) echo 3 > /proc/stb/fp/remote_code
+		   echo 3 > /var/etc/rccode;;
+		4) echo 4 > /proc/stb/fp/remote_code
+		   echo 4 > /var/etc/rccode;;
+		*) exit;;
+	esac
+}
+
 # with parameter "start" -> set only rc code
 if [ "$1" == "start" ]; then
-	[ -e /var/etc/rccode ] && echo -n `cat /var/etc/rccode` > /proc/stb/ir/rc/type
+	if [ "$BOXMODEL" != "vuplus" ]; then
+		[ -e /var/etc/rccode ] && echo -n `cat /var/etc/rccode` > /proc/stb/ir/rc/type
+	else
+		[ -e /var/etc/rccode ] && echo -n `cat /var/etc/rccode` > /proc/stb/fp/remote_code
+	fi
 	exit
 fi
 
 # plugin menu
-msgbox title="Fernbedienung umschalten" msg="~cDiese Fernbedienungen stehen zur Wahl" select="Dreambox,et9000,et5000/et6000,VU+ (Code 0001),et6500/et8000/et9500/et10000,et9200,et4000,et7000/et7500/et8500/HD51,ZGEMMA H7,BRE2ZE 4K" default=$DEFAULT_RC
-setrccode $?
+if [ "$BOXMODEL" != "vuplus" ]; then
+	msgbox title="Fernbedienung umschalten" msg="~cDiese Fernbedienungen stehen zur Wahl" select="Dreambox,et9000,et5000/et6000,VU+ (Code 0001),et6500/et8000/et9500/et10000,et9200,et4000,et7000/et7500/et8500/HD51,ZGEMMA H7,BRE2ZE 4K" default=$DEFAULT_RC
+	setrccode $?
+else
+	msgbox title="Fernbedienung umschalten" msg="~cDiese Fernbedienungscodes stehen zur Wahl" select="Code 0001, Code 0002, Code 0003, Code 0004" default=$DEFAULT_RC
+	setrccode_vu $?
+fi
 
 msgbox title="Fernbedienungscode umschalten" msg="~cFunktioniert die Fernbedienung?" select="Ja,Nein" default=2 timeout=15
 if [ "$?" == "1" ]; then
 	exit
 else
-	setrccode $DEFAULT_RC
+	[ "$BOXMODEL" != "vuplus" ] && setrccode $DEFAULT_RC || setrccode_vu $DEFAULT_RC
 	msgbox title="Fernbedienungscode umschalten" popup="~cOriginaler Fernbedienungscode wiederhergestellt." timeout=3
 fi
