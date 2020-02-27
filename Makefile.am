@@ -3,7 +3,8 @@ AUTOMAKE_OPTIONS = gnu
 SUBDIRS = \
 	include \
 	input \
-	getrc
+	getrc \
+	spiegel-tv_doc
 
 if BOXTYPE_ARMBOX
 if BOXMODEL_VUPLUS_ARM
