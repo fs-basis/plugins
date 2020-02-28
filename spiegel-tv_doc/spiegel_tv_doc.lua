@@ -133,7 +133,6 @@ function decodeImage(b64Image)
 end
 -- ####################################################################
 
--- Duration
 function fill_playlist() 
 	local data = getdata('https://www.spiegel.de/thema/spiegel-tv/index.rss',nil) 
 	if data then
