@@ -83,8 +83,8 @@ function conv_str(_string)
 	_string = string.gsub(_string,"&#x00f6","ö");
 	_string = string.gsub(_string,"&#x00dc","Ü");
 	_string = string.gsub(_string,"&#x00fc","ü");
-	_string = string.gsub(_string,"&#x00df","ß"); 
-	_string = string.gsub(_string,"u00df","ß"); 
+	_string = string.gsub(_string,"&#x00df","ß");
+	_string = string.gsub(_string,"u00df","ß");
 	_string = string.gsub(_string,"&#039","'");
 	_string = string.gsub(_string,'&#34','"');
 	_string = string.gsub(_string,"&#261","ą");
@@ -133,8 +133,8 @@ function decodeImage(b64Image)
 end
 -- ####################################################################
 
-function fill_playlist() 
-	local data = getdata('https://www.spiegel.de/thema/spiegel-tv/index.rss',nil) 
+function fill_playlist()
+	local data = getdata('https://www.spiegel.de/thema/spiegel-tv/index.rss',nil)
 	if data then
 		for  item in data:gmatch('<item>(.-)</item>')  do
 			local title = item:match("<title>(.-)</title>") -- Sendungstitel
@@ -149,7 +149,7 @@ function fill_playlist()
 				add_stream(conv_str(title), url, date, conv_str(description) )
 			end
             end
-	end 
+	end
 end
 
 -- epg-Fenster
@@ -157,7 +157,7 @@ local epg = ""
 local title = ""
 
 function epgInfo (xres, yres, aspectRatio, framerate)
-	if #epg < 1 then return end 
+	if #epg < 1 then return end
 	local dx = 800;
 	local dy = 400;
 	local x = 0;
@@ -226,7 +226,7 @@ function select_playitem()
 		title = p[pmid].title
 	end
 	local js_data = getdata(url,nil) -- z.B. https://www.spiegel.de/video/spiegel-tv-ueber-auto-poser-und-ps-protze-video-99031464.html
-	local url1 = js_data:match('"mediaId":"(.-)",')
+	local url1 = js_data:match('mediaId&.-&.-;(.-)&')
 	local url2 = "https://cdn.jwplayer.com/manifests/" ..url1 .. ".m3u8"
 	local url3 = getdata(url2,nil)
 	local url = url3:match('x720.-(http.-)\n')
