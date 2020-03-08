@@ -28,7 +28,6 @@ Makefile
 include/Makefile
 input/Makefile
 getrc/Makefile
-spiegel-tv_doc/Makefile
 stb-startup/Makefile
 stb-startup-ddt/Makefile
 stb-backup/Makefile
