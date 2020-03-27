@@ -1,8 +1,8 @@
 #!/bin/sh
-##################################
-### Switch RC Code by BPanther ###
-### Version 2.00,  15-Dec-2019 ###
-##################################
+################################
+###   Switch RC Code v2.02   ###
+### by BPanther, 27-Mar-2020 ###
+################################
 
 [ -e /proc/stb/info/model ] && BOXMODEL=`cat /proc/stb/info/model` || exit
 [ -e /proc/stb/info/vumodel ] && VUMODEL=`cat /proc/stb/info/vumodel`
@@ -77,18 +77,20 @@ if [ "$1" == "start" ]; then
 fi
 
 # plugin menu
+TIMEOUT=60
 if [ "$BOXMODEL" != "vuplus" ]; then
-	msgbox title="Fernbedienung umschalten" msg="~cDiese Fernbedienungen stehen zur Wahl" select="Dreambox,et9000,et5000/et6000,VU+ (Code 0001),et6500/et8000/et9500/et10000,et9200,et4000,et7000/et7500/et8500/HD51,ZGEMMA H7,BRE2ZE 4K" default=$DEFAULT_RC
+	msgbox title="Fernbedienung `echo \"$BOXMODEL\" | tr '[a-z]' '[A-Z]'` umschalten" msg="~cFolgende Fernbedienungen stehen zur Auswahl" select="Dreambox,et9000,et5000/et6000,VU+ (Code 0001),et6500/et8000/et9500/et10000,et9200,et4000,et7000/et7500/et8500/HD51,ZGEMMA H7,BRE2ZE 4K" default=$DEFAULT_RC
 	setrccode $?
+	msgbox title="Fernbedienungscode umschalten" msg="~cFunktioniert die Fernbedienung?~n~cIn $TIMEOUT Sekunden wird der Code zurückgesetzt wenn nicht mit \"Ja\" bestätigt." select="Ja,Nein" default=2 timeout=$TIMEOUT
 else
-	msgbox title="Fernbedienung umschalten" msg="~cDiese Fernbedienungscodes stehen zur Wahl" select="Code 0001, Code 0002, Code 0003, Code 0004" default=$DEFAULT_RC
+	msgbox title="Fernbedienungscode `echo \"$VUMODEL\" | tr '[a-z]' '[A-Z]'` umschalten" msg="~cFolgende Fernbedienungscodes stehen zur Auswahl" select="Code 0001, Code 0002, Code 0003, Code 0004" default=$DEFAULT_RC order=4
 	setrccode_vu $?
+	msgbox title="Fernbedienungscode umschalten" msg="~cDie Umstellung des Codes der Fernbedienung erfolgt mit:~n~n~cFernbedienung Typ 2/3/4~n~cZiffern 2+7 für ca. 3 Sekunden drücken bis die LED leuchtet, nun Taste HELP drücken.~n~n~cFernbedienung Typ 5/6~n~cTasten POWER+OK für ca. 3 Sekunden drücken bis die LED leuchtet.~n~n~cWeiter für alle FB-Typen~n~cDann 0001, 0002, 0003 oder 0004 drücken für gewünschten Code.~n~n~cFernbedienung Typ 5/6~n~cNun mit OK bestätigen. Die rote LED blinkt 2x zur Bestätigung.~h~n~n~cFunktioniert die Fernbedienung?~n~cIn $TIMEOUT Sekunden wird der Code zurückgesetzt wenn nicht mit \"Ja\" bestätigt." select="Ja,Nein" default=2 timeout=$TIMEOUT
 fi
 
-msgbox title="Fernbedienungscode umschalten" msg="~cFunktioniert die Fernbedienung?" select="Ja,Nein" default=2 timeout=15
 if [ "$?" == "1" ]; then
 	exit
 else
 	[ "$BOXMODEL" != "vuplus" ] && setrccode $DEFAULT_RC || setrccode_vu $DEFAULT_RC
-	msgbox title="Fernbedienungscode umschalten" popup="~cOriginaler Fernbedienungscode wiederhergestellt." timeout=3
+	msgbox title="Fernbedienungscode umschalten" popup="~cOriginaler Fernbedienungscode wiederhergestellt." timeout=5
 fi
