@@ -28,6 +28,12 @@ FT_Face			face;
 FT_UInt			prev_glyphindex;
 FT_Bool			use_kerning;
 
+struct fb_fix_screeninfo fix_screeninfo;
+struct fb_var_screeninfo var_screeninfo;
+
+int fb;
+int startx, starty, sx, ex, sy, ey;
+
 #define FONT2 FONTDIR "/pakenham.ttf"
 // if font is not in usual place, we look here:
 char FONT[128] = FONTDIR "/neutrino.ttf";
