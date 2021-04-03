@@ -6,7 +6,7 @@ SUBDIRS = \
 if BOXTYPE_ARMBOX
 if BOXMODEL_VUPLUS_ARM
 SUBDIRS += \
-	stb-startup-vu \
+	stb-startup-ddt \
 	stb-backup
 else
 SUBDIRS += \
@@ -15,9 +15,3 @@ SUBDIRS += \
 	stb-switch-rc
 endif
 endif
-
-#if BOXTYPE_ARMBOX
-#SUBDIRS += \
-#	stb-startup-ddt \
-#	stb-backup
-#endif

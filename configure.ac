@@ -46,6 +46,5 @@ fx2/solitair/Makefile
 stb-startup/Makefile
 stb-startup-ddt/Makefile
 stb-backup/Makefile
-stb-startup-vu/Makefile
 stb-switch-rc/Makefile
 ])
