@@ -178,8 +178,12 @@ function get_imagename(root)
 	return imagename
 end
 
+rtp = 0
+rr = 0
 function is_active(root)
+	rr = rr + 1
 	if (current_root == root) then
+		rtp = rr
 		active = " *"
 	else
 		active = ""
@@ -363,7 +367,7 @@ function main()
 		y = OFFSET.INNER_SMALL,
 		dx = chooser_dx - 2*OFFSET.INNER_MID,
 		dy = chooser_dy - chooser:headerHeight() - chooser:footerHeight() - 2*OFFSET.INNER_SMALL,
-		text = locale[lang].current_boot_partition .. get_imagename(current_root) .. locale[lang].choose_partition,
+		text = locale[lang].current_boot_partition .. rtp .. "\n" .. "\n" .. get_imagename(current_root) .. locale[lang].choose_partition,
 		font_text = FONT.MENU,
 		mode = "ALIGN_CENTER"
 	}
