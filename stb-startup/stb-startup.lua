@@ -132,15 +132,9 @@ function get_value(str,root,etcdir)
 end
 
 function get_imagename(root)
-	local etc_isdir = false
 	local imagename = " "
-	if isdir("/tmp/testmount/rootfs" .. root .. "/etc") then
-		etc_isdir = true
-	end
-	if etc_isdir and
-	(exists("/tmp/testmount/rootfs" .. root  .. "/.version")) then
-		imagename = get_value("distro", root, "/etc") .. " " .. get_value("imageversion", root, "/etc")
-	elseif exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
+	if isdir and
+	exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
 		imagename = get_value("distro", root, "/.version") .. " " .. get_value("imageversion", root, "/.version")
 	end
 	if imagename == " " then
@@ -294,8 +288,6 @@ function main()
 				devbase = string.sub(line, j+1, j+13)
 			end
 		end
-	else
-		devbase = "linuxrootfs"
 	end
 
 	if islink(partitions_by_name .. "/bootoptions") then
@@ -392,9 +384,7 @@ function main()
 	chooser:hide()
 
 	if colorkey then
-		if islink("/tmp/testmount/" .. devbase .. root) then
-			-- found image folder
-		elseif isdir("/tmp/testmount/rootfs" .. root) then
+		if isdir("/tmp/testmount/rootfs" .. root) then
 			-- found image folder
 		else
 			local ret = hintbox.new { title = caption, icon = "settings", text = locale[lang].empty_partition };
