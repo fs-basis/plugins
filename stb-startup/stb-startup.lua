@@ -138,7 +138,7 @@ function get_value(str,root,etcdir)
 			end
 		end
 	elseif is_mounted("/tmp/testmount/rootfs" .. root) then
-		for line in io.lines("/tmp/testmount/rootfs" .. root  .. etcdir .. "/image-version") do
+		for line in io.lines("/tmp/testmount/rootfs" .. root  .. "/.version") do
 			if line:match(str .. "=") then
 				local i,j = string.find(line, str .. "=")
 				value = string.sub(line, j+1, #line)
@@ -157,11 +157,11 @@ function get_imagename(root)
 	end
 	if etc_isdir and
 	(exists("/tmp/testmount/linuxrootfs" .. root .. "/etc/image-version") or
-	exists("/tmp/testmount/rootfs" .. root  .. "/etc/image-version")) then
+	exists("/tmp/testmount/rootfs" .. root  .. "/.version")) then
 		imagename = get_value("distro", root, "/etc") .. " " .. get_value("imageversion", root, "/etc")
 	elseif exists("/tmp/testmount/linuxrootfs" .. root .. "/var/etc/image-version") or
-	exists("/tmp/testmount/rootfs" .. root  .. "/var/etc/image-version") then
-		imagename = get_value("distro", root, "/var/etc") .. " " .. get_value("imageversion", root, "/var/etc")
+	exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
+		imagename = get_value("distro", root, "/.version") .. " " .. get_value("imageversion", root, "/.version")
 	end
 	if imagename == " " then
 		local glob = require "posix".glob
