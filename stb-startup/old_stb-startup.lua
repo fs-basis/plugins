@@ -83,6 +83,16 @@ function mount_filesystems()
 			mount(partitions_by_name .. "/" .. v,"/tmp/testmount/" .. v)
 		end
 	end
+	if not has_gpt_layout() then
+		if is_mounted("/tmp/testmount/linuxrootfs") then
+			link("/tmp/testmount/linuxrootfs/linuxrootfs1","/tmp/testmount/linuxrootfs1")
+		else
+			link("/tmp/testmount/userdata/linuxrootfs1","/tmp/testmount/linuxrootfs1")
+		end
+		link("/tmp/testmount/userdata/linuxrootfs2","/tmp/testmount/linuxrootfs2")
+		link("/tmp/testmount/userdata/linuxrootfs3","/tmp/testmount/linuxrootfs3")
+		link("/tmp/testmount/userdata/linuxrootfs4","/tmp/testmount/linuxrootfs4")
+	end
 end
 
 function umount_filesystems()
@@ -120,8 +130,15 @@ end
 
 function get_value(str,root,etcdir)
 	local value = ""
-	if is_mounted("/tmp/testmount/rootfs" .. root) then
-		for line in io.lines("/tmp/testmount/rootfs" .. root  .. "/.version") do
+	if is_mounted("/tmp/testmount/userdata") then
+		for line in io.lines("/tmp/testmount/linuxrootfs" .. root  .. etcdir .. "/image-version") do
+			if line:match(str .. "=") then
+				local i,j = string.find(line, str .. "=")
+				value = string.sub(line, j+1, #line)
+			end
+		end
+	elseif is_mounted("/tmp/testmount/rootfs" .. root) then
+		for line in io.lines("/tmp/testmount/rootfs" .. root  .. etcdir .. "/image-version") do
 			if line:match(str .. "=") then
 				local i,j = string.find(line, str .. "=")
 				value = string.sub(line, j+1, #line)
@@ -134,14 +151,17 @@ end
 function get_imagename(root)
 	local etc_isdir = false
 	local imagename = " "
-	if isdir("/tmp/testmount/rootfs" .. root .. "/etc") then
+	if isdir("/tmp/testmount/linuxrootfs" .. root .. "/etc") or
+	isdir("/tmp/testmount/rootfs" .. root .. "/etc") then
 		etc_isdir = true
 	end
 	if etc_isdir and
-	(exists("/tmp/testmount/rootfs" .. root  .. "/.version")) then
+	(exists("/tmp/testmount/linuxrootfs" .. root .. "/etc/image-version") or
+	exists("/tmp/testmount/rootfs" .. root  .. "/etc/image-version")) then
 		imagename = get_value("distro", root, "/etc") .. " " .. get_value("imageversion", root, "/etc")
-	elseif exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
-		imagename = get_value("distro", root, "/.version") .. " " .. get_value("imageversion", root, "/.version")
+	elseif exists("/tmp/testmount/linuxrootfs" .. root .. "/var/etc/image-version") or
+	exists("/tmp/testmount/rootfs" .. root  .. "/var/etc/image-version") then
+		imagename = get_value("distro", root, "/var/etc") .. " " .. get_value("imageversion", root, "/var/etc")
 	end
 	if imagename == " " then
 		local glob = require "posix".glob
@@ -172,7 +192,9 @@ function is_active(root)
 end
 
 function has_gpt_layout()
-	return true
+	if (devbase ~= "linuxrootfs") then
+		return true
+	end
 end
 
 function has_boxmode()
@@ -248,7 +270,7 @@ end
 
 function main()
 	caption = "STB-Startup"
-	partlabels = {"rootfs1","rootfs2","rootfs3","rootfs4","boot","bootoptions"}
+	partlabels = {"linuxrootfs","userdata","rootfs1","rootfs2","rootfs3","rootfs4","boot","bootoptions"}
 	n = neutrino()
 	fh = filehelpers.new()
 
