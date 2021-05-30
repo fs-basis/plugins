@@ -102,17 +102,6 @@ function sleep(n)
 	os.execute("sleep " .. tonumber(n))
 end
 
-function reboot()
-	umount_filesystems()
-	if exists("/bin/systemctl") then
-		local file = assert(io.popen("systemctl reboot"))
-	elseif exists("/sbin/init") then
-		local file = assert(io.popen("sync && init 6"))
-	else
-		local file = assert(io.popen("reboot"))
-	end
-end
-
 function basename(str)
 	local name = string.gsub(str, "(.*/)(.*)", "%2")
 	return name
@@ -250,8 +239,7 @@ function main()
 	locale["deutsch"] = {
 		current_boot_partition = "Die aktuelle Startpartition ist: ",
 		choose_partition = "\n\nBitte wählen Sie die neue Startpartition aus",
-		start_partition = "Auf die gewählte Partition umschalten ?",
-		reboot_partition = "Bitte die Box nun neu starten.",
+		start_partition = "Rebooten und die gewählte Partition starten?",
 		empty_partition = "Das gewählte Image ist nicht vorhanden",
 		options = "Einstellungen",
 		boxmode = "Boxmode 12"
@@ -260,8 +248,7 @@ function main()
 	locale["english"] = {
 		current_boot_partition = "The current boot partition is: ",
 		choose_partition = "\n\nPlease choose the new boot partition",
-		start_partition = "Switch to the choosen partition ?",
-		reboot_partition = "Please restart now.",
+		start_partition = "Reboot and start the chosen partition?",
 		empty_partition = "No image available",
 		options = "Options",
 		boxmode = "Boxmode 12"
@@ -431,15 +418,7 @@ function main()
 			file:write(v, "\n")
 		end
 		file:close()
-	res = messagebox.exec {
-		title = caption,
-		icon = "settings",
-		text = locale[lang].reboot_partition,
-		timeout = 0,
-		width = 475,
-		buttons={ "ok" }
-	}
---		reboot()
+		n:ExitRun(1)
 	end
 	umount_filesystems()
 	return
