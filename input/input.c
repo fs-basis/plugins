@@ -85,7 +85,7 @@ const char sc[8]={'a','o','u','A','O','U','z','d'}, tc[8]={0xE4,0xF6,0xFC,0xC4,0
 int radius;
 int stride;
 
-#if defined(HAVE_SPARK_HARDWARE) || defined(HAVE_DUCKBOX_HARDWARE)
+#if defined(HAVE_DUCKBOX_HARDWARE)
 int sync_blitter = 0;
 
 void blit(void) {
@@ -323,7 +323,7 @@ int main (int argc, char **argv)
 			perror(__plugin__ " <FBIOGET_VSCREENINFO>\n");
 			return -1;
 		}
-#if defined(HAVE_SPARK_HARDWARE) || defined(HAVE_DUCKBOX_HARDWARE)
+#if defined(HAVE_DUCKBOX_HARDWARE)
 		var_screeninfo.xres = DEFAULT_XRES;
 		var_screeninfo.yres = DEFAULT_YRES;
 #endif
@@ -683,7 +683,7 @@ void closedown(void)
 	FTC_Manager_Done(manager);
 	FT_Done_FreeType(library);
 
-#if !defined(HAVE_SPARK_HARDWARE) && !defined(HAVE_DUCKBOX_HARDWARE)
+#if !defined(HAVE_DUCKBOX_HARDWARE)
 	free(lbb);
 #endif
 	free(obb);

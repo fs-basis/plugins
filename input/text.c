@@ -156,7 +156,7 @@ int RenderChar(FT_ULong currentchar, int _sx, int _sy, int _ex, int color)
 
 	if(color != -1) /* don't render char, return charwidth only */
 	{
-#if defined(HAVE_SPARK_HARDWARE) || defined(HAVE_DUCKBOX_HARDWARE)
+#if defined(HAVE_DUCKBOX_HARDWARE)
 		if(sync_blitter) {
 			sync_blitter = 0;
 			if (ioctl(fb, STMFBIO_SYNC_BLITTER) < 0)
@@ -287,7 +287,7 @@ int RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout,
 
 	_ex = _sx + maxwidth;
 
-#if defined(MARTII) && defined(HAVE_SPARK_HARDWARE) || defined(HAVE_DUCKBOX_HARDWARE)
+#if defined(MARTII) && defined(HAVE_DUCKBOX_HARDWARE)
 	if(sync_blitter) {
 		sync_blitter = 0;
 		if (ioctl(fb, STMFBIO_SYNC_BLITTER) < 0)
