@@ -2,7 +2,7 @@
 --
 -- Copyright 2018 - 2019 Markus Volk (f_l_k@t-online.de)
 -- Copyright 2018 Sven Hoefer, Don de Deckelwech
--- Redistribution and use in source and binary forms, with or without modification, 
+-- Redistribution and use in source and binary forms, with or without modification,
 -- are permitted provided that the following conditions are met:
 --
 -- Redistributions of source code must retain the above copyright notice, this list
@@ -159,8 +159,8 @@ function has_gpt_layout()
 end
 
 function has_boxmode()
-	for line in io.lines("/proc/cpuinfo") do
-		if line:match("Broadcom") then
+	for line in io.lines("/proc/stb/info/model") do
+		if line:match("hd51") or line:match("bre2ze4k") or line:match("h7") then
 			return true
 		end
 	end
