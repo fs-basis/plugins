@@ -1,7 +1,7 @@
 #!/bin/sh
 ################################
-###   Switch RC Code v2.02   ###
-### by BPanther, 27-Mar-2020 ###
+###   Switch RC Code v2.03   ###
+### by BPanther, 22-Okt-2022 ###
 ################################
 
 [ -e /proc/stb/info/model ] && BOXMODEL=`cat /proc/stb/info/model` || exit
@@ -20,6 +20,8 @@ case $BOXMODEL in
 		DEFAULT_RC=9;;
 	bre2ze4k)
 		DEFAULT_RC=10;;
+	e4hd)
+		DEFAULT_RC=11;;
 	vuplus)
 		DEFAULT_RC=2;;
 	*)
@@ -48,6 +50,8 @@ setrccode () {
 	    echo 21 > /var/etc/rccode;;
 	10) echo 23 > /proc/stb/ir/rc/type
 	    echo 23 > /var/etc/rccode;;
+	11) echo 24 > /proc/stb/ir/rc/type
+	    echo 24 > /var/etc/rccode;;
 	*)  exit;;
 	esac
 }
