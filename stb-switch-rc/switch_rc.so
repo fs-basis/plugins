@@ -83,7 +83,7 @@ fi
 # plugin menu
 TIMEOUT=60
 if [ "$BOXMODEL" != "vuplus" ]; then
-	msgbox title="Fernbedienung `echo \"$BOXMODEL\" | tr '[a-z]' '[A-Z]'` umschalten" msg="~cFolgende Fernbedienungen stehen zur Auswahl" select="Dreambox,et9000,et5000/et6000,VU+ (Code 0001),et6500/et8000/et9500/et10000,et9200,et4000,et7000/et7500/et8500/HD51,ZGEMMA H7,BRE2ZE 4K" default=$DEFAULT_RC
+	msgbox title="Fernbedienung `echo \"$BOXMODEL\" | tr '[a-z]' '[A-Z]'` umschalten" msg="~cFolgende Fernbedienungen stehen zur Auswahl" select="Dreambox,et9000,et5000/et6000,VU+ (Code 0001),et6500/et8000/et9500/et10000,et9200,et4000,et7000/et7500/et8500/HD51,ZGEMMA H7,BRE2ZE 4K, E4HD" default=$DEFAULT_RC
 	setrccode $?
 	msgbox title="Fernbedienungscode umschalten" msg="~cFunktioniert die Fernbedienung?~n~cIn $TIMEOUT Sekunden wird der Code zurückgesetzt wenn nicht mit \"Ja\" bestätigt." select="Ja,Nein" default=2 timeout=$TIMEOUT
 else
