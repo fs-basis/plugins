@@ -29,7 +29,7 @@ new_layout=0
 multi=0
 gui_mode=0
 bkp_part=1
-magic_number="0x016f2818" # HD51 / BRE2ZE4K / ZGEMMA H7 / VUSOLO4K / VUDUO4K / VUDUO4KSE / VUZERO4K / UTLIMATE4K / UNO4K / UNO4KSE / E4HD
+magic_number="0x016f2818" # HD51 / BRE2ZE4K / ZGEMMA H7 / VUSOLO4K / VUDUO4K / VUDUO4KSE / VUZERO4K / UTLIMATE4K / UNO4K / UNO4KSE / E4HDULTRA
 dtb_magic_number="0xd00dfeed"
 
 #
