@@ -305,6 +305,7 @@ function main()
 	chooser_x = SCREEN.OFF_X + (((SCREEN.END_X - SCREEN.OFF_X) - chooser_dx) / 2)
 	chooser_y = SCREEN.OFF_Y + (((SCREEN.END_Y - SCREEN.OFF_Y) - chooser_dy) / 2)
 
+if has_boxmode() then
 	chooser = cwindow.new {
 		x = chooser_x,
 		y = chooser_y,
@@ -319,6 +320,21 @@ function main()
 		btnBlue = get_imagename(4) .. is_active(4),
 		btnSetup = "Boxmode"
 	}
+else
+	chooser = cwindow.new {
+		x = chooser_x,
+		y = chooser_y,
+		dx = chooser_dx,
+		dy = chooser_dy,
+		title = caption,
+		icon = "settings",
+		has_shadow = true,
+		btnRed = get_imagename(1) .. is_active(1),
+		btnGreen = get_imagename(2) .. is_active(2),
+		btnYellow = get_imagename(3) .. is_active(3),
+		btnBlue = get_imagename(4) .. is_active(4),
+	}
+end
 
 	chooser_text = ctext.new {
 		parent = chooser,
