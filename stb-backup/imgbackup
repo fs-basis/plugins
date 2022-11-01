@@ -1,20 +1,12 @@
 #!/bin/sh
 # Script for complete image backup
 # License: GPLv2 or later
-Version="1.32 vom 14.10.2022"
+Version="1.34 vom 01.11.2022"
 Copyright="(C) 2018-2022 DboxOldie / BPanther / Frankenstone / Fritz"
 
 #
 file=$0
 model=`cat /proc/stb/info/model`
-[ -e /proc/stb/info/vumodel ] && vumodel=`cat /proc/stb/info/vumodel`
-[ "$model" == "dm8000" ] && [ "$vumodel" == "solo4k" ] && model=$vumodel
-[ "$model" == "dm8000" ] && [ "$vumodel" == "duo4k" ] && model=$vumodel
-[ "$model" == "dm8000" ] && [ "$vumodel" == "duo4kse" ] && model=$vumodel
-[ "$model" == "dm8000" ] && [ "$vumodel" == "zero4k" ] && model=$vumodel
-[ "$model" == "dm8000" ] && [ "$vumodel" == "ultimo4k" ] && model=$vumodel
-[ "$model" == "dm8000" ] && [ "$vumodel" == "uno4k" ] && model=$vumodel
-[ "$model" == "dm8000" ] && [ "$vumodel" == "uno4kse" ] && model=$vumodel
 save_path="/tmp"
 tmproot="/tmp/buroot"
 multiroot="/tmp/multiroot"
@@ -29,21 +21,8 @@ new_layout=0
 multi=0
 gui_mode=0
 bkp_part=1
-magic_number="0x016f2818" # HD51 / BRE2ZE4K / ZGEMMA H7 / VUSOLO4K / VUDUO4K / VUDUO4KSE / VUZERO4K / UTLIMATE4K / UNO4K / UNO4KSE / E4HDULTRA
+magic_number="0x016f2818" # HD51 / BRE2ZE4K / ZGEMMA H7 / E4HDULTRA
 dtb_magic_number="0xd00dfeed"
-
-#
-# Subroutine für VUSOLO4K / VUDUO4K / VUDUO4KSE / VUZERO4K / UTLIMATE4K / UNO4K / UNO4KSE
-#
-read_bootargs_vu()
-{
-	rootmtd=`readlink /dev/root`
-	PARTS=`parted /dev/mmcblk0 print free -s`
-	[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_1 | awk '{print $1}'`" ] && bkp_part=1
-	[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_2 | awk '{print $1}'`" ] && bkp_part=2
-	[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_3 | awk '{print $1}'`" ] && bkp_part=3
-	[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_4 | awk '{print $1}'`" ] && bkp_part=4
-}
 
 #
 # Subroutine für AX HD51 / Bre2ze 4K / Zgemma H7 / E4HD 4K Ultra
@@ -113,8 +92,6 @@ select_backup_dir() {
 #
 if [ "$model" == "hd51" -o "$model" == "h7" -o "$model" == "bre2ze4k" -o "$model" == "e4hd" ]; then
 	read_bootargs
-else
-	read_bootargs_vu
 fi
 
 #
@@ -127,14 +104,6 @@ do
 	[ "$(echo ${parm:0:1})" == "/" ] && save_path=$parm
 	[ "$parm" == "select_dir" ] && select_dir=1
 
-	if [ "$parm" == "gui" ] && [ "$model" == "solo4k" -o "$model" == "ultimo4k" -o "$model" == "uno4k" -o "$model" == "uno4kse" ] && [ "$rootmtd" == "mmcblk0p4" ]; then
-		parm="nogui" && select_dir=1
-	elif [ "$parm" == "gui" ] && [ "$model" == "zero4k" ] && [ "$rootmtd" == "mmcblk0p7" ]; then
-		parm="nogui" && select_dir=1
-	elif [ "$parm" == "gui" ] && [ "$model" == "duo4k" -o "$model" == "duo4kse" ] && [ "$rootmtd" == "mmcblk0p9" ]; then
-		parm="nogui" && select_dir=1
-	fi
-
 	if [ "$parm" == "gui" ]; then
 		gui_mode=1
 		msgbox title="Partitions-Backup erstellen" msg="~cDiese Partitionen stehen zur Auswahl:" select="Partition 1, Partition 2, Partition 3, Partition 4" order=4 default=$bkp_part
@@ -146,8 +115,6 @@ do
 		if [ "$model" == "hd51" -o "$model" == "h7" -o "$model" == "bre2ze4k" -o "$model" == "e4hd" ]; then
 			[ $new_layout == 0 ] && rootmtd=mmcblk0p3 && multi=1
 			[ $new_layout == 1 ] && kernelnumber=2 && rootsubdir="linuxrootfs1" && rootmtd=mmcblk0p3 && multi=1
-		elif [ "$model" == "solo4k" -o "$model" == "ultimo4k" -o "$model" == "uno4k" -o "$model" == "uno4kse" -o "$model" == "zero4k" -o "$model" == "duo4k" -o "$model" == "duo4kse" ]; then
-			rootmtd=`echo -n "mmcblk0p" && echo "$PARTS" | grep rootfs_1 | awk '{print $1}'` && multi=1
 		fi
 		destname="$(echo ${parm:1:2})-"$destname
 		B_PART=`echo "Backup Partition: ${parm:2:3}"`
@@ -155,8 +122,6 @@ do
 		if [ "$model" == "hd51" -o "$model" == "h7" -o "$model" == "bre2ze4k" -o "$model" == "e4hd" ]; then
 			[ $new_layout == 0 ] && rootmtd=mmcblk0p5 && multi=1
 			[ $new_layout == 1 ] && kernelnumber=4 && rootsubdir="linuxrootfs2" && rootmtd=$multidev && multi=1
-		elif [ "$model" == "solo4k" -o "$model" == "ultimo4k" -o "$model" == "uno4k" -o "$model" == "uno4kse" -o "$model" == "zero4k" -o "$model" == "duo4k" -o "$model" == "duo4kse" ]; then
-			rootmtd=`echo -n "mmcblk0p" && echo "$PARTS" | grep rootfs_2 | awk '{print $1}'` && multi=1
 		fi
 		destname="$(echo ${parm:1:2})-"$destname
 		B_PART=`echo "Backup Partition: ${parm:2:3}"`
@@ -164,8 +129,6 @@ do
 		if [ "$model" == "hd51" -o "$model" == "h7" -o "$model" == "bre2ze4k" -o "$model" == "e4hd" ]; then
 			[ $new_layout == 0 ] && rootmtd=mmcblk0p7 && multi=1
 			[ $new_layout == 1 ] && kernelnumber=5 && rootsubdir="linuxrootfs3" && rootmtd=$multidev && multi=1
-		elif [ "$model" == "solo4k" -o "$model" == "ultimo4k" -o "$model" == "uno4k" -o "$model" == "uno4kse" -o "$model" == "zero4k" -o "$model" == "duo4k" -o "$model" == "duo4kse" ]; then
-			rootmtd=`echo -n "mmcblk0p" && echo "$PARTS" | grep rootfs_3 | awk '{print $1}'` && multi=1
 		fi
 		destname="$(echo ${parm:1:2})-"$destname
 		B_PART=`echo "Backup Partition: ${parm:2:3}"`
@@ -173,8 +136,6 @@ do
 		if [ "$model" == "hd51" -o "$model" == "h7" -o "$model" == "bre2ze4k" -o "$model" == "e4hd" ]; then
 			[ $new_layout == 0 ] && rootmtd=mmcblk0p9 && multi=1
 			[ $new_layout == 1 ] && kernelnumber=6 && rootsubdir="linuxrootfs4" && rootmtd=$multidev && multi=1
-		elif [ "$model" == "solo4k" -o "$model" == "ultimo4k" -o "$model" == "uno4k" -o "$model" == "uno4kse" -o "$model" == "zero4k" -o "$model" == "duo4k" -o "$model" == "duo4kse" ]; then
-			rootmtd=`echo -n "mmcblk0p" && echo "$PARTS" | grep rootfs_4 | awk '{print $1}'` && multi=1
 		fi
 		destname="$(echo ${parm:1:2})-"$destname
 		B_PART=`echo "Backup Partition: ${parm:2:3}"`
@@ -204,7 +165,7 @@ check_df=`df "$save_path" | tail -n1 | wc -w`
 [ $check_df -eq 5 ] && save_path_size=`df "$save_path" | tail -n1 | awk '{print $3}'` || save_path_size=`df "$save_path" | tail -n1 | awk '{print $4}'`
 
 echo "  Image Backup (Version: $Version) - $Copyright"
-echo "  AX HD51 4K, Bre2ze 4K, ZGEMMA H7, VU+ DUO 4K, VU+ DUO 4K SE, VU+ UNO 4K, VU+ UNO 4K SE, VU+ ZERO 4K, VU+ ULTIMO 4K, VU+ SOLO 4K, AXAS E4HD 4K ULTRA"
+echo "  AX HD51 4K, Bre2ze 4K, ZGEMMA H7,s AXAS E4HD 4K ULTRA"
 echo
 echo "  $B_PART"
 echo "  $B_DIR"
@@ -222,41 +183,6 @@ df "$save_path" | grep -q tmpfs && DIR_CHECK=$? || DIR_CHECK=$?
 if [ "$model" == "hd51" -o "$model" == "h7" -o "$model" == "bre2ze4k" -o "$model" == "e4hd" ]; then
 	echo "  Image Backup für Boxmodel '$model' startet..."
 	[ $new_layout == 0 ] && kernelnumber=$((rootnumber - 1))
-elif [ "$model" == "solo4k" -o "$model" == "ultimo4k" -o "$model" == "uno4k" -o "$model" == "uno4kse" ]; then
-	case $rootmtd in
-		mmcblk0p4)
-			kernelnumber=$((rootnumber - 3));;
-		*)
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_1 | awk '{print $1}'`" ] && multipart=1
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_2 | awk '{print $1}'`" ] && multipart=2
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_3 | awk '{print $1}'`" ] && multipart=3
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_4 | awk '{print $1}'`" ] && multipart=4
-			kernelnumber=$((rootnumber - 1));;
-	esac
-	echo "  Image Backup für Boxmodel '$model' startet..."
-elif [ "$model" == "zero4k" ]; then
-	case $rootmtd in
-		mmcblk0p7)
-			kernelnumber=$((rootnumber - 3));;
-		*)
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_1 | awk '{print $1}'`" ] && multipart=1
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_2 | awk '{print $1}'`" ] && multipart=2
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_3 | awk '{print $1}'`" ] && multipart=3
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_4 | awk '{print $1}'`" ] && multipart=4
-			kernelnumber=$((rootnumber - 1));;
-	esac
-	echo "  Image Backup für Boxmodel '$model' startet..."
-elif [ "$model" == "duo4k" -o "$model" == "duo4kse" ]; then
-	case $rootmtd in
-		mmcblk0p9)
-			kernelnumber=$((rootnumber - 3));;
-		*)
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_1 | awk '{print $1}'`" ] && multipart=1
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_2 | awk '{print $1}'`" ] && multipart=2
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_3 | awk '{print $1}'`" ] && multipart=3
-			[ "$rootmtd" == "`echo -n "mmcblk0p" && echo \"$PARTS\" | grep rootfs_4 | awk '{print $1}'`" ] && multipart=4
-			kernelnumber=$((rootnumber - 1));;
-	esac
 	echo "  Image Backup für Boxmodel '$model' startet..."
 else
 	echo "  Box nicht unterstützt - Abbruch!"
@@ -386,7 +312,6 @@ k_read()
 	dd if=/dev/$kernelmtd of="$save_path"/kernel_1.bin bs=4096 count=$count 2> /dev/null
 	dd if=/dev/$kernelmtd of="$save_path"/kernel_2.bin bs=1 count=$rest skip=$len1 2> /dev/null
 
-	[ "$model" == "duo4k" -o "$model" == "duo4kse" -o "$model" == "uno4k" -o "$model" == "uno4kse" -o "$model" == "zero4k" -o "$model" == "ultimo4k" -o "$model" == "solo4k" ] && extname=${multipart}_auto
 	cat "$save_path"/kernel_?.bin > "$save_path"/kernel$extname.bin
 
 	rm -f "$save_path"/kernel_?.bin
