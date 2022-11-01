@@ -44,7 +44,6 @@ fx2/sol/Makefile
 fx2/sudoku/Makefile
 fx2/solitair/Makefile
 stb-startup/Makefile
-stb-startup-ddt/Makefile
 stb-backup/Makefile
 stb-switch-rc/Makefile
 ])
