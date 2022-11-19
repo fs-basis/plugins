@@ -126,6 +126,10 @@ function get_imagename(root)
 	exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
 		imagename = get_value("distro", root, "/.version") .. " " .. get_value("imageversion", root, "/.version")
 	end
+	if imagename == " " and
+		exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
+			imagename = get_value("creator", root, "", ".version") .. " " .. get_value("git", root, "", ".version")
+		end
 	if imagename == " " then
 		local glob = require "posix".glob
 		for _, j in pairs(glob(boot .. '/*', 0)) do
