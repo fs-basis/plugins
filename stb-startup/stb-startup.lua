@@ -124,7 +124,7 @@ function get_imagename(root)
 	local imagename = " "
 	if isdir and
 	exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
-		imagename = get_value("distro", root, "/.version") .. " " .. get_value("imageversion", root, "/.version")
+		imagename = get_value("distro", root, "/.version")-- .. " " .. get_value("imageversion", root, "/.version")
 	end
 	if imagename == " " and
 		exists("/tmp/testmount/rootfs" .. root  .. "/.version") then
